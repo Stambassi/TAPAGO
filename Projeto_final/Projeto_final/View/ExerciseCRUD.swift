@@ -37,6 +37,22 @@ struct ExerciseCRUD: View {
                     .cornerRadius(10)
                 Spacer()
                 HStack {
+                    Text("Nome:")
+                        .foregroundColor(.white)
+                        .font(.title2)
+                    Spacer()
+                    TextField("Nomeie o exercício", text: $nome)
+                        .textFieldStyle(.roundedBorder)
+                        .padding(.leading)
+                        .frame(width: 200)
+                        .multilineTextAlignment(TextAlignment.center)
+                }
+                .padding(35)
+                .frame(width: 370, height: 55)
+                .background(.navBar)
+                .cornerRadius(10)
+                .padding(35)
+                HStack {
                     Text("Repetições")
                         .foregroundColor(.white)
                         .font(.title2)
