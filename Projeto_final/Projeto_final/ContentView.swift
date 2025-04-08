@@ -27,7 +27,7 @@ struct ContentView: View {
                         Text("User")
                     }
                 
-                TrainingPage()
+                NewWorkoutPage()
                     .tabItem {
                         Image(systemName: "book.pages.fill")
                         Text("Training")
