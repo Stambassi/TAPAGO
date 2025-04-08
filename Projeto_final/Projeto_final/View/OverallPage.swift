@@ -21,7 +21,7 @@ struct OverallPage: View {
                      grafico(day: "Qui", desempenho: 90.0, tapago: true),
                      grafico(day: "Sex", desempenho: 100.0, tapago: true)]
         ZStack{
-            Color(.bgdBlack).edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+            Color(.primaryPreset).edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             ScrollView{
                 VStack{
                     HStack{
@@ -33,7 +33,7 @@ struct OverallPage: View {
                     VStack{
                         HStack{
                             ZStack{
-                                Image("retangle").resizable().scaledToFit().frame(width: 340, height: 200).background(.cards).cornerRadius(30).overlay(RoundedRectangle(cornerRadius: 30).stroke(Color.gray, lineWidth: 1))
+                                Image("retangle").resizable().scaledToFit().frame(width: 340, height: 200).background(.navBar).cornerRadius(30).overlay(RoundedRectangle(cornerRadius: 30).stroke(Color.gray, lineWidth: 1))
                                 HStack{
                                     Image("circle").foregroundStyle(.black).foregroundColor(.blue)
                                     Text("teste").foregroundStyle(.white)
@@ -49,7 +49,7 @@ struct OverallPage: View {
                         }
                         HStack{
                             ZStack{
-                                Image("retangle").resizable().scaledToFit().frame(width: 165, height: 180).background(.cards).cornerRadius(30).overlay(RoundedRectangle(cornerRadius: 30).stroke(Color.gray, lineWidth: 1))
+                                Image("retangle").resizable().scaledToFit().frame(width: 165, height: 180).background(.navBar).cornerRadius(30).overlay(RoundedRectangle(cornerRadius: 30).stroke(Color.gray, lineWidth: 1))
                                 VStack{
                                     HStack{
                                         Image(systemName: "bolt.heart.fill").foregroundStyle(.red).font(.system(size: 50))
@@ -62,7 +62,7 @@ struct OverallPage: View {
                                 
                             }
                             ZStack{
-                                Image("retangle").resizable().scaledToFit().frame(width: 165, height: 180).background(.cards).cornerRadius(30).overlay(RoundedRectangle(cornerRadius: 30).stroke(Color.gray, lineWidth: 1))
+                                Image("retangle").resizable().scaledToFit().frame(width: 165, height: 180).background(.navBar).cornerRadius(30).overlay(RoundedRectangle(cornerRadius: 30).stroke(Color.gray, lineWidth: 1))
                                 VStack{
                                     HStack{
                                         Image(systemName: "dumbbell.fill").foregroundStyle(.red).font(.system(size: 50))
