@@ -13,9 +13,9 @@ struct ContentView: View {
         UITabBar.appearance().unselectedItemTintColor = .gray
     }
     var body: some View {
-        
+        NavigationStack{
             TabView{
-               
+                
                 HomePage()
                     .tabItem {
                         Image(systemName: "house.fill")
@@ -26,6 +26,7 @@ struct ContentView: View {
                         Image(systemName: "person.fill")
                         Text("User")
                     }
+                
                 TrainingPage()
                     .tabItem {
                         Image(systemName: "book.pages.fill")
@@ -44,14 +45,16 @@ struct ContentView: View {
                     }
                 
             }
+            
+            
             .accentColor(.secondaryPreset)
             
-        .onAppear(){
-            UITabBar.appearance().backgroundColor = .navBar}
-        
+            .onAppear(){
+                UITabBar.appearance().backgroundColor = .navBar}
+            
+            
+        }
 
-        
-        
     }
 }
 
