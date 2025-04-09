@@ -1,10 +1,3 @@
-//
-//  HomePage.swift
-//  Projeto_final
-//
-//  Created by Turma02-25 on 04/04/25.
-//
-
 import SwiftUI
 import Charts
 
@@ -18,6 +11,9 @@ struct HomePage: View {
     }
     
     @State var currentDate: Date = Date()
+    
+    @State private var treinos: [Treino] = []
+    @StateObject var viewModel = ViewModel()
     
     var body: some View {
         
@@ -69,9 +65,31 @@ struct HomePage: View {
                         }
                         .frame(width: 340, height: 150)
                     }
+                }.padding(.bottom)
+                VStack {
+                    HStack {
+                        Text("Meus Treinos")
+                            .foregroundColor(.white)
+                            .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                        Spacer()
+                    }
+                    HStack {
+                        Text("Escolha seu treino")
+                            .foregroundColor(.white)
+                            .font(.subheadline)
+                        Spacer()
+                    }
+                }.padding()
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(viewModel.treinos) { treino in
+                        Treinos(treino: treino)
+                    }
                 }
-                NewWorkoutPage()
+                .padding(.horizontal)
             }
+        }.onAppear(){
+            viewModel.fetchExercicios()
+            viewModel.fetchTreinos()
         }
     }
 }
