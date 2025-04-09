@@ -8,8 +8,31 @@
 import SwiftUI
 
 struct ExerciseGroup: View {
+    
+    struct Exercicio: Hashable{
+        var nome: String
+    }
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        let ex = [Exercicio(nome: "Biceps"),Exercicio(nome: "Triceps"),Exercicio(nome: "Quadriceps")]
+        ZStack{
+            Color(.navBar).ignoresSafeArea()
+            VStack{
+                HStack{
+                    Text("Grupo Muscular").font(.system(size: 30)).foregroundStyle(.white)
+                }
+                VStack{
+                    List(ex, id:\.self) { e in
+                        NavigationStack{
+                            NavigationLink(destination: Exercise()){
+                                Text(e.nome).foregroundStyle(.black)
+                            }
+                        }
+                        
+                    }
+                }
+                Spacer()
+            }
+        }
     }
 }
 

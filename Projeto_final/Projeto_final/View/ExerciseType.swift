@@ -13,17 +13,33 @@ struct ExerciseType: View {
             Color(.navBar).ignoresSafeArea()
             VStack{
                 HStack{
-                    Spacer()
                     Text("Selecione o tipo de exercicio").foregroundStyle(.white).font(.system(size: 30))
-                    Spacer()
                 }.padding()
-                Spacer()
                 VStack{
                     NavigationStack{
-                        //Image("retangle").color(.navBar)
+                        
+                        ZStack{
+                        Image("retangle").frame(width: 300, height: 100).background(.red).cornerRadius(20)
+                            NavigationLink(destination: ExerciseGroup()){
+                                Text("Musculacao").font(.system(size: 30)).foregroundStyle(.white)
+                            }
+                        }
+                        ZStack{
+                        Image("retangle").frame(width: 300, height: 100).background(.red).cornerRadius(20)
+                            NavigationLink(destination: ExerciseGroup()){
+                                Text("Cardio").font(.system(size: 30)).foregroundStyle(.white)
+                            }
+                        }
+                        ZStack{
+                            Image("retangle").frame(width: 300, height: 100).background(.red).cornerRadius(20)
+                            NavigationLink(destination: ExerciseGroup()){
+                                Text("Alongamento").font(.system(size: 30)).foregroundStyle(.white)
+                            }
+                        }
+                        Spacer()
                     }
                 }
-                
+                Spacer()
             }
         }
     }
