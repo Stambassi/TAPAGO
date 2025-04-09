@@ -4,11 +4,13 @@ import SwiftUI
 struct NewWorkoutPage: View {
     
     @State private var showingSheet = false
-    @State private var nome: String = ""
-    @State private var descricao: String = ""
-    @State private var musculos: [String] = ["Peito", "Costas"]
-    @State private var duracao: Int = 0
-    @State private var descansoPorSerie: Int = 0
+    
+    @State private var nomeTreino: String = ""
+    @State private var descricaoTreino: String = ""
+    @State private var duracaoTreino: Float = 0
+    @State private var exerciciosTreino: [Int] = [0]
+    @State private var descansoPorSerieTreino: Int = 0
+
     
     @State private var treinos: [Treino] = []
     @StateObject var viewModel = ViewModel()
@@ -34,16 +36,12 @@ struct NewWorkoutPage: View {
                     .frame(height: 30)
                 
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack() {
                         
                         ForEach(viewModel.treinos) { treino in
-                            VStack(alignment: .leading) {
+                            VStack() {
                                 
                                 HStack {
-                                    Image(systemName: "dumbbell.fill")
-                                        .foregroundColor(.white)
-                                        .font(.system(size: 30))
-                                    
                                     VStack(alignment: .leading) {
                                         Text(treino.nome!)
                                             .font(.headline)
@@ -115,7 +113,7 @@ struct NewWorkoutPage: View {
                                 HStack {
                                     Text("Nome:")
                                         .font(.system(size: 25, weight: .black))
-                                    TextField("Nome do treino...", text: $nome)
+                                    TextField("Nome do treino...", text: $nomeTreino)
                                         .font(.system(size: 19, weight: .regular))
                                 }
                                 .padding()
@@ -123,7 +121,7 @@ struct NewWorkoutPage: View {
                                 HStack {
                                     Text("Descrição:")
                                         .font(.system(size: 25, weight: .black))
-                                    TextField("Descrição do treino...", text: $descricao)
+                                    TextField("Descrição do treino...", text: $descricaoTreino)
                                         .font(.system(size: 19, weight: .regular))
                                 }
                                 .padding()
@@ -131,7 +129,7 @@ struct NewWorkoutPage: View {
                                 HStack {
                                     Text("Duração:")
                                         .font(.system(size: 25, weight: .black))
-                                    TextField("Duração do treino...", value: $duracao, formatter: NumberFormatter())
+                                    TextField("Duração do treino:", value: $duracaoTreino, formatter: NumberFormatter())
                                         .font(.system(size: 19, weight: .regular))
                                         .keyboardType(.decimalPad)
                                 }
@@ -140,7 +138,7 @@ struct NewWorkoutPage: View {
                                 HStack {
                                     Text("Descanso por Série:")
                                         .font(.system(size: 25, weight: .black))
-                                    TextField("Descanso por série...", value: $descansoPorSerie, formatter: NumberFormatter())
+                                    TextField("Descanso:", value: $descansoPorSerieTreino, formatter: NumberFormatter())
                                         .font(.system(size: 19, weight: .regular))
                                         .keyboardType(.numberPad)
                                 }
@@ -160,16 +158,12 @@ struct NewWorkoutPage: View {
                                 .padding()
                                 
                                 Button(action: {
-                                    //                                    let novoTreino = Treino(id: viewModel.treinos.count + 1, nome: nome, descricao: descricao, musculos: musculos, duracao: duracao, exercicios: [0,1,2], descansoPorSerie: descansoPorSerie)
-                                    //                                    treinos.append(novoTreino)
-                                    //
-                                    //                                    nome = ""
-                                    //                                    descricao = ""
-                                    //                                    musculos = [""]
-                                    //                                    duracao = 0
-                                    //                                    descansoPorSerie = 0
-                                    //                                    showingSheet = false
-                                    
+                                
+                                   let batimento = Batimento(id: 0, _id: "", _rev: "", mpb: 80, horario: 0)
+                                   let novoTreino = Treino(id: viewModel.treinos.count + 1, _id: "", _rev: "", nome: nomeTreino, descricao: descricaoTreino, musculos: ["Peito"], image: "", duracao: duracaoTreino, exercicios: [0,1,2], descansoPorSerie: descansoPorSerieTreino, batimentos: [batimento])
+                                    print(novoTreino)
+                                    treinos.append(novoTreino)
+                                    showingSheet = false
                                 }) {
                                     Text("Salvar Treino")
                                         .font(.headline)
@@ -196,8 +190,6 @@ struct NewWorkoutPage: View {
     }
 }
 
-struct NewWorkoutPage_Previews: PreviewProvider {
-    static var previews: some View {
-        NewWorkoutPage()
-    }
+#Preview {
+    NewWorkoutPage()
 }
