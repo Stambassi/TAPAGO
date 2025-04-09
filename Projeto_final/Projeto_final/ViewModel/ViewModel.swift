@@ -67,7 +67,98 @@ class ViewModel : ObservableObject {
         
     }
     
-    func postExercicio(ex: Exercicio, completion: @escaping ([String: Any]?, Error?) -> Void){
+    func realizarPostTreino(t: Treino, completion: @escaping ([String: Any]?, Error?) -> Void){
+        let url_post_exercicio = url_api+"treinoPOST"
+        //URL válida
+        guard let URL = URL(string: url_post_exercicio) else {
+            completion(nil, nil)
+            return
+        }
+        let id: Int
+        let _id : String?
+        let _rev: String?
+        let nome: String?
+        let descricao :String?
+        let musculos: [String]?
+        let image: String?
+        let duracao: Float?
+        let exercicios : [Int]?
+        let descansoPorSerie: Int?
+        let batimentos : [Batimento]?
+        
+        //Cria a representacão da requisição
+        var request = URLRequest(url: URL)
+        let params = """
+            [
+                {
+                    "id": \(t.id),
+                    "nome": "\(t.nome!)",
+                    "descricao": "\(t.descricao!)",
+                    "musculos": "\(t.musculos!)",
+                    "image": "\(t.image!)",
+                    "duracao": \(t.duracao!),
+                    "exercicios": \(t.exercicios!),
+                    "descansoPorSerie": \(t.descansoPorSerie!),
+                    "batimentos": [
+                        {
+                           "id":0,
+                           "mpb":80,
+                           "horario":0
+                        }
+                     ],
+                }
+            ]
+            """
+        print(params)
+        // Converte a string JSON para Data
+           guard let jsonData = params.data(using: .utf8) else {
+               completion(nil, NSError(domain: "Invalid JSON", code: 400, userInfo: nil))
+               return
+           }
+           
+           // Atribui à requisição o método POST e define o cabeçalho Content-Type como "application/json"
+           request.httpMethod = "POST"
+           request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+           request.httpBody = jsonData
+           
+           // Cria a tarefa de requisição
+           let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+               do {
+                   if let data = data {
+                       // A resposta chegou
+                       let response = try JSONSerialization.jsonObject(with: data, options: [])
+                       completion(response as? [String: Any], nil)
+                   } else {
+                       // Não houve resposta
+                       completion(nil, nil)
+                   }
+               } catch let error as NSError {
+                   // Houve um erro na comunicação com o servidor
+                   completion(nil, error)
+               }
+           }
+           
+           // Aciona a tarefa
+           task.resume()
+        
+    }
+    func postTreino(treino: Treino){
+        realizarPostTreino(t: treino){
+            (result, err)  in
+            //Aqui você tem seu resultado
+            if let res:Bool = (result?.values.first as? Bool) {
+                if(res) {
+                    //Aqui res podera assumir dois valores, true ou false
+                    print("sua requisicao foi realizada com sucesso")
+                } else {
+                    //Aqui voce pode tratar os erros
+                    print("a requisicao nao funcionou")
+                }
+            }
+        }
+    }
+    
+    func realizarPostExercicio(ex: Exercicio, completion: @escaping ([String: Any]?, Error?) -> Void){
         let url_post_exercicio = url_api+"exercicioPOST"
         //URL válida
         guard let URL = URL(string: url_post_exercicio) else {
@@ -76,60 +167,69 @@ class ViewModel : ObservableObject {
         }
         
         //Cria a representacão da requisição
-        let request = NSMutableURLRequest(url: URL)
+        var request = URLRequest(url: URL)
+        let params = """
+            [
+                {
+                    "id": \(ex.id),
+                    "nome": "\(ex.nome!)",
+                    "musculo": "\(ex.musculo!)",
+                    "image": "\(ex.image!)",
+                    "categoria": "\(ex.categoria!)",
+                    "tempoPorRep": \(ex.tempoPorRep!),
+                    "peso": \(ex.peso!),
+                    "repeticao": \(ex.repeticao!),
+                    "descansoPorRep": \(ex.descansoPorRep!)
+                }
+            ]
+            """
+        print(params)
+        // Converte a string JSON para Data
+           guard let jsonData = params.data(using: .utf8) else {
+               completion(nil, NSError(domain: "Invalid JSON", code: 400, userInfo: nil))
+               return
+           }
+           
+           // Atribui à requisição o método POST e define o cabeçalho Content-Type como "application/json"
+           request.httpMethod = "POST"
+           request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+           request.httpBody = jsonData
+           
+           // Cria a tarefa de requisição
+           let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+               do {
+                   if let data = data {
+                       // A resposta chegou
+                       let response = try JSONSerialization.jsonObject(with: data, options: [])
+                       completion(response as? [String: Any], nil)
+                   } else {
+                       // Não houve resposta
+                       completion(nil, nil)
+                   }
+               } catch let error as NSError {
+                   // Houve um erro na comunicação com o servidor
+                   completion(nil, error)
+               }
+           }
+           
+           // Aciona a tarefa
+           task.resume()
         
-        let params = [
-            "id": ex.id,
-            "nome":ex.nome!,
-            "musculo": ex.musculo!,
-            "image": ex.image!,
-            "categoria": ex.categoria!,
-            "tempoPorRep": ex.tempoPorRep!,
-            "peso": ex.peso!,
-            "repeticao": ex.repeticao!,
-            "descansoPorRep": ex.descansoPorRep!,
-        ] as [String : Any]
-        
-        do {
-                // Converte o array de dicionários em JSON
-                let jsonData = try JSONSerialization.data(withJSONObject: params, options: [])
-//                print("JsonData"+jsonData)
-                // Atribui à requisição o método POST e define o cabeçalho Content-Type como "application/json"
-                request.httpMethod = "POST"
-                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                request.httpBody = jsonData
-                
-            } catch let error {
-                // Em caso de erro ao gerar o JSON
-                completion(nil, error)
-                return
+    }
+    func postExercicio(exercicio: Exercicio){
+        realizarPostExercicio(ex: exercicio){
+            (result, err)  in
+            //Aqui você tem seu resultado
+            if let res:Bool = (result?.values.first as? Bool) {
+                if(res) {
+                    //Aqui res podera assumir dois valores, true ou false
+                    print("sua requisicao foi realizada com sucesso")
+                } else {
+                    //Aqui voce pode tratar os erros
+                    print("a requisicao nao funcionou")
+                }
             }
-        
-        
-        //Cria a tarefa de requisição
-//        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-//            (data, response, error) in
-//            do {
-//                
-//                if let data = data {
-//                    //A resposta chegou
-//                    let response = try JSONSerialization.jsonObject(with: data, options: [])
-//                    completion(response as? [String : Any], nil)
-//                }
-//                else {
-//                    //Não houve resposta
-//                    completion(nil, nil)
-//                }
-//            } catch let error as NSError {
-//                //Houve um erro na comunicao com o servidor
-//                completion(nil, error)
-//            }
-//        }
-        
-        
-        //Aciona a tarefa
-//        task.resume()
-        
+        }
     }
     
     
