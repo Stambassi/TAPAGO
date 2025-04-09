@@ -1,20 +1,5 @@
 import SwiftUI
 
-struct Exercicio: Identifiable {
-    var id = UUID()
-    var nome: String
-    var repeticao: Int
-}
-
-struct Treino: Identifiable {
-    var id: Int
-    var nome: String
-    var descricao: String
-    var musculos: [String]
-    var duracao: Int
-    var exercicios: [Exercicio]
-    var descansoPorSerie: Int
-}
 
 struct NewWorkoutPage: View {
     
@@ -23,11 +8,11 @@ struct NewWorkoutPage: View {
     @State private var descricao: String = ""
     @State private var musculos: [String] = ["Peito", "Costas"]
     @State private var duracao: Int = 0
-    @State private var exercicios: [Exercicio] = [Exercicio(nome: "Flexão", repeticao: 0)]
     @State private var descansoPorSerie: Int = 0
     
     @State private var treinos: [Treino] = []
-
+    @StateObject var viewModel = ViewModel()
+    
     var body: some View {
         ZStack {
             Color(.black).ignoresSafeArea()
@@ -44,14 +29,14 @@ struct NewWorkoutPage: View {
                 Image(systemName: "dumbbell.fill")
                     .foregroundColor(.white)
                     .font(.system(size: 60))
-
+                
                 Spacer()
                     .frame(height: 30)
                 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 10) {
                         
-                        ForEach(treinos) { treino in
+                        ForEach(viewModel.treinos) { treino in
                             VStack(alignment: .leading) {
                                 
                                 HStack {
@@ -60,10 +45,10 @@ struct NewWorkoutPage: View {
                                         .font(.system(size: 30))
                                     
                                     VStack(alignment: .leading) {
-                                        Text(treino.nome)
+                                        Text(treino.nome!)
                                             .font(.headline)
                                             .foregroundColor(.white)
-                                        Text(treino.descricao)
+                                        Text(treino.descricao!)
                                             .font(.subheadline)
                                             .foregroundColor(.white)
                                     }
@@ -72,15 +57,15 @@ struct NewWorkoutPage: View {
                                 
                                 // Informações embaixo
                                 VStack(alignment: .leading) {
-                                    Text("Duração: \(treino.duracao) minutos")
+                                    Text("Duração: \(treino.duracao!) minutos")
                                         .font(.subheadline)
                                         .foregroundColor(.white)
                                     
-                                    Text("Descanso: \(treino.descansoPorSerie) segundos")
+                                    Text("Descanso: \(treino.descansoPorSerie!) segundos")
                                         .font(.subheadline)
                                         .foregroundColor(.white)
                                     
-                                    Text("Músculos: \(treino.musculos.joined(separator: ", "))")
+                                    Text("Músculos: \(treino.musculos!.joined(separator: ", "))")
                                         .font(.subheadline)
                                         .foregroundColor(.white)
                                 }
@@ -92,14 +77,22 @@ struct NewWorkoutPage: View {
                                         .font(.subheadline)
                                         .foregroundColor(.white)
                                     
-                                    ForEach(treino.exercicios) { exercicio in
-                                        Text("\(exercicio.nome) - Reps: \(exercicio.repeticao)")
-                                            .foregroundColor(.white)
+                                    if(treino.exercicios != nil){
+                                        ForEach(treino.exercicios!, id:\.self) { i in
+                                            ForEach(viewModel.exercicios){ ex in
+                                                if(ex.id == i){
+                                                    Text(ex.nome!)
+                                                        .font(.subheadline)
+                                                        .foregroundColor(.white)
+                                                }
+                                                
+                                            }
+                                        }
                                     }
                                 }
                                 
                             }
-                         
+                            
                             .background(Color.gray.opacity(0.2))
                             .cornerRadius(6)
                         }
@@ -156,27 +149,26 @@ struct NewWorkoutPage: View {
                                 VStack(alignment: .leading) {
                                     Text("Exercícios:")
                                         .font(.system(size: 25, weight: .black))
-                                    ForEach(exercicios) { exercicio in
+                                    ForEach(viewModel.exercicios) { exercicio in
                                         HStack {
-                                            Text(exercicio.nome)
+                                            Text(exercicio.nome!)
                                             Spacer()
-                                            Text("Reps: \(exercicio.repeticao)")
+                                            Text("Reps: \(exercicio.repeticao!)")
                                         }
                                     }
                                 }
                                 .padding()
                                 
                                 Button(action: {
-                                    let novoTreino = Treino(id: treinos.count + 1, nome: nome, descricao: descricao, musculos: musculos, duracao: duracao, exercicios: exercicios, descansoPorSerie: descansoPorSerie)
-                                    treinos.append(novoTreino)
-                                    
-                                    nome = ""
-                                    descricao = ""
-                                    musculos = [""]
-                                    duracao = 0
-                                    exercicios = [Exercicio(nome: "", repeticao: 0)]
-                                    descansoPorSerie = 0
-                                    showingSheet = false
+                                    //                                    let novoTreino = Treino(id: viewModel.treinos.count + 1, nome: nome, descricao: descricao, musculos: musculos, duracao: duracao, exercicios: [0,1,2], descansoPorSerie: descansoPorSerie)
+                                    //                                    treinos.append(novoTreino)
+                                    //
+                                    //                                    nome = ""
+                                    //                                    descricao = ""
+                                    //                                    musculos = [""]
+                                    //                                    duracao = 0
+                                    //                                    descansoPorSerie = 0
+                                    //                                    showingSheet = false
                                     
                                 }) {
                                     Text("Salvar Treino")
@@ -196,6 +188,10 @@ struct NewWorkoutPage: View {
                 
                 Spacer()
             }
+        }.onAppear(){
+            viewModel.fetchExercicios()
+            viewModel.fetchTreinos()
+            
         }
     }
 }
