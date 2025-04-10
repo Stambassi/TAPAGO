@@ -8,33 +8,52 @@
 import SwiftUI
 
 struct Exercise: View {
-    struct Exercicio: Hashable{
-        var nome: String
-    }
+    let musculo: String
+    @State private var exercicios: [Exercicio] = []
+    @StateObject var viewModel = ViewModel()
     var body: some View {
-        let ex = [Exercicio(nome: "Biceps 7/7/7"),Exercicio(nome: "Biceps corda"),Exercicio(nome: "Rosca scott")]
+        let exerciciosFiltrados = viewModel.exercicios.filter { $0.musculo == musculo }
+        //Text("Músculos únicos: \(musculosUnicos)")
+        
         ZStack{
             Color(.navBar).ignoresSafeArea()
             VStack{
                 HStack{
                     Text("Grupo Muscular").font(.system(size: 30)).foregroundStyle(.white)
                 }
-                VStack{
-                    List(ex, id:\.self) { e in
-                        NavigationStack{
-                            NavigationLink(destination: ExerciseCRUD()){
-                                Text(e.nome).foregroundStyle(.black)
+                Text("Exercícios para \(musculo)")
+                                    .font(.system(size: 25))
+                                    .padding().foregroundStyle(.white)
+                List(exerciciosFiltrados, id: \._id) { exercicio in
+                                    VStack(alignment: .leading) {
+                                        Text(exercicio.nome ?? "Exercício Sem Nome")
+                                            .font(.headline)
+                                        Text("Repetições: \(exercicio.repeticao ?? 0)")
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                    /*NavigationStack{
+                        VStack{
+                            ForEach(musculosUnicos, id:\.self) { e in
+                                NavigationLink(destination: Exercise()){
+                                    ZStack{
+                                        Image("retangle").frame(width: 300, height: 75).background(.secondaryPreset).cornerRadius(20)
+                                        Text(e).foregroundStyle(.black).font(.system(size: 30))
+                                    }
+                                }
+                                
                             }
-                        }
-                        
                     }
-                }
+                    }.background(.navBar)*/
                 Spacer()
             }
+        }.onAppear(){
+            viewModel.fetchExercicios()
         }
     }
 }
 
 #Preview {
-    Exercise()
+    Exercise(musculo: "Peito")
 }
