@@ -21,10 +21,11 @@ struct ContentView: View {
                         Image(systemName: "house.fill")
                         Text("Home")
                     }
-                UserPage()
+                
+                OverallPage()
                     .tabItem {
-                        Image(systemName: "person.fill")
-                        Text("User")
+                        Image(systemName: "chart.bar.xaxis.ascending")
+                        Text("Overall")
                     }
                 
                 NewWorkoutPage()
@@ -33,15 +34,11 @@ struct ContentView: View {
                         Text("Training")
                         
                     }
-                OverallPage()
+                
+                UserPage()
                     .tabItem {
-                        Image(systemName: "chart.bar.xaxis.ascending")
-                        Text("Overall")
-                    }
-                ExerciseCRUD()
-                    .tabItem {
-                        Image(systemName: "folder.badge.plus")
-                        Text("CRUD")
+                        Image(systemName: "person.fill")
+                        Text("User")
                     }
                 
             }   
