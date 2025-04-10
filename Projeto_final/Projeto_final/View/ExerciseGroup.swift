@@ -9,29 +9,36 @@ import SwiftUI
 
 struct ExerciseGroup: View {
     
-    struct Exercicio: Hashable{
-        var nome: String
-    }
+    
+    @State private var exercicios: [Exercicio] = []
+    @StateObject var viewModel = ViewModel()
     var body: some View {
-        let ex = [Exercicio(nome: "Biceps"),Exercicio(nome: "Triceps"),Exercicio(nome: "Quadriceps")]
+        let musculosUnicos = Array(Set(viewModel.exercicios.compactMap { $0.musculo }))
+        //Text("Músculos únicos: \(musculosUnicos)")
+        
         ZStack{
             Color(.navBar).ignoresSafeArea()
             VStack{
                 HStack{
                     Text("Grupo Muscular").font(.system(size: 30)).foregroundStyle(.white)
                 }
-                VStack{
-                    List(ex, id:\.self) { e in
-                        NavigationStack{
-                            NavigationLink(destination: Exercise()){
-                                Text(e.nome).foregroundStyle(.black)
+                    NavigationStack{
+                        VStack{
+                            ForEach(musculosUnicos, id:\.self) { e in
+                                NavigationLink(destination: Exercise()){
+                                    ZStack{
+                                        Image("retangle").frame(width: 300, height: 50).background(.secondaryPreset).cornerRadius(20)
+                                        Text(e).foregroundStyle(.black).font(.system(size: 30))
+                                    }
+                                }
+                                
                             }
-                        }
-                        
                     }
-                }
+                    }.background(.navBar)
                 Spacer()
             }
+        }.onAppear(){
+            viewModel.fetchExercicios()
         }
     }
 }
