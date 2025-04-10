@@ -24,11 +24,11 @@ struct ExerciseGroup: View {
                 }
                     NavigationStack{
                         VStack{
-                            ForEach(musculosUnicos, id:\.self) { e in
-                                NavigationLink(destination: Exercise()){
+                            ForEach(musculosUnicos, id:\.self) { musculo in
+                                NavigationLink(destination: Exercise(musculo: musculo)){
                                     ZStack{
                                         Image("retangle").frame(width: 300, height: 50).background(.secondaryPreset).cornerRadius(20)
-                                        Text(e).foregroundStyle(.black).font(.system(size: 30))
+                                        Text(musculo).foregroundStyle(.black).font(.system(size: 30))
                                     }
                                 }
                                 
