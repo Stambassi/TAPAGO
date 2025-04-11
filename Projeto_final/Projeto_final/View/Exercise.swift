@@ -10,6 +10,8 @@ import SwiftUI
 struct Exercise: View {
     let musculo: String
     @State private var exercicios: [Exercicio] = []
+    @State private var isShowingSheet = false
+    @State private var selectedExercicio: Exercicio? = nil
     @StateObject var viewModel = ViewModel()
     var body: some View {
         let exerciciosFiltrados = viewModel.exercicios.filter { $0.musculo == musculo }
@@ -18,34 +20,34 @@ struct Exercise: View {
         ZStack{
             Color(.navBar).ignoresSafeArea()
             VStack{
-                HStack{
-                    Text("Grupo Muscular").font(.system(size: 30)).foregroundStyle(.white)
-                }
                 Text("Exercícios para \(musculo)")
                                     .font(.system(size: 25))
                                     .padding().foregroundStyle(.white)
-                List(exerciciosFiltrados, id: \._id) { exercicio in
-                                    VStack(alignment: .leading) {
-                                        Text(exercicio.nome ?? "Exercício Sem Nome")
-                                            .font(.headline)
-                                        Text("Repetições: \(exercicio.repeticao ?? 0)")
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
-                                    }
+                NavigationStack{
+                    List(exerciciosFiltrados, id: \._id) { exercicio in
+                        HStack{
+                            Spacer()
+                            GIFElement(gifURL: exercicio.image ?? "")
+                            Spacer()
+                        }
+                        HStack {
+                            NavigationLink(destination: SheetView(viewModel: viewModel, exercicio: exercicio)){
+                                ZStack{
+                                    Image("retangle").frame(width: 300, height: 50).background(.secondaryPreset).cornerRadius(20)
+                                    Text(exercicio.nome!).foregroundStyle(.black).font(.system(size: 20))
                                 }
-                    /*NavigationStack{
-                        VStack{
-                            ForEach(musculosUnicos, id:\.self) { e in
-                                NavigationLink(destination: Exercise()){
-                                    ZStack{
-                                        Image("retangle").frame(width: 300, height: 75).background(.secondaryPreset).cornerRadius(20)
-                                        Text(e).foregroundStyle(.black).font(.system(size: 30))
-                                    }
+                                HStack(alignment: .center) {
+                                    Spacer()
+                                    Image(systemName: "plus.circle")
+                                        .foregroundColor(.red)
+                                        .font(.title2)
+                                    
+                                    Spacer()
                                 }
-                                
                             }
+                        }
                     }
-                    }.background(.navBar)*/
+                }
                 Spacer()
             }
         }.onAppear(){
