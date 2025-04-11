@@ -10,7 +10,8 @@ struct NewWorkoutPage: View {
     @State private var duracaoTreino: Float = 0.0
     @State private var exerciciosTreino: [Int] = [0]
     @State private var descansoPorSerieTreino: Int = 0
-
+    
+    @State var idAux: Int = 0
     
     @State private var treinos: [Treino] = []
     @StateObject var viewModel = ViewModel()
@@ -18,14 +19,13 @@ struct NewWorkoutPage: View {
     var body: some View {
         NavigationStack{
             ZStack {
-                Color(.black).ignoresSafeArea()
-                
+                Color(.primaryPreset).ignoresSafeArea()
                 VStack {
                    
-                    Text("Criar Novo Treino")
+                    Text("MEUS TREINOS")
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity, alignment: .center)
-                        .font(.system(size: 35, weight: .black))
+                        .font(.system(size: 35))
                     
                     Spacer()
                         .frame(height: 40)
@@ -57,7 +57,7 @@ struct NewWorkoutPage: View {
                                     .padding(10)
                                     .frame(width: 370)
                                     
-                                    // Informações embaixo
+                                    
                                     VStack(alignment: .center) {
                                         Text("Duração: \(String(format: "%.0f", treino.duracao!)) minutos")
                                             .font(.subheadline)
@@ -88,7 +88,7 @@ struct NewWorkoutPage: View {
                                                             .foregroundColor(.white)
                                                     }
                                                 }
-                                        }
+                                            }
                                         }
                                     }
                                 }
@@ -97,6 +97,10 @@ struct NewWorkoutPage: View {
                                 Spacer()
                                 .frame(height: 20)
                             }
+                            Text("Criar Novo Treino")
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .font(.system(size: 24, weight: .black))
                             
                             // Adicionar novo treino
                             Button {
@@ -107,8 +111,9 @@ struct NewWorkoutPage: View {
                                     .font(.system(size: 60))
                             }
                             .sheet(isPresented: $showingSheet) {
-                               SheetView()
+                                SheetView(viewModel: viewModel)
                             }
+
                         }
                         .padding(.horizontal)
                     }
@@ -116,9 +121,10 @@ struct NewWorkoutPage: View {
                     Spacer()
                 }
             }.onAppear(){
-                viewModel.fetchExercicios()
-                viewModel.fetchTreinos()
-                
+                Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { _ in
+                    viewModel.fetchExercicios()
+                    viewModel.fetchTreinos()
+                }
             }
         }
     }

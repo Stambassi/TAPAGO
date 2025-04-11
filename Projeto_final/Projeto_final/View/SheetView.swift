@@ -10,6 +10,8 @@ import SwiftUI
 struct SheetView: View {
     
     
+    var onSalvar: ((Treino) -> Void)? = nil
+
     @State private var showingSheet = false
     
     @State private var nomeTreino: String = ""
@@ -112,11 +114,23 @@ struct SheetView: View {
                 .padding()
                 
                 Button(action: {
-                    
                     let batimento = Batimento(id: 0, _id: "", _rev: "", mpb: 80, horario: 0)
-                    let novoTreino = Treino(id: viewModel.treinos.count + 1, _id: "", _rev: "", nome: nomeTreino, descricao: descricaoTreino, musculos: ["Peito"], image: "", duracao: duracaoTreino, exercicios: [0,1,2], descansoPorSerie: descansoPorSerieTreino, batimentos: [batimento])
-                    print(novoTreino)
-                    treinos.append(novoTreino)
+                    
+                    let novoTreino = Treino(
+                        id: Int.random(in: 1000...9999), // ou use outro método de ID
+                        _id: "",
+                        _rev: "",
+                        nome: nomeTreino,
+                        descricao: descricaoTreino,
+                        musculos: ["Peito"],
+                        image: "",
+                        duracao: duracaoTreino,
+                        exercicios: exerciciosTreino,
+                        descansoPorSerie: descansoPorSerieTreino,
+                        batimentos: [batimento]
+                    )
+                    
+                    onSalvar?(novoTreino) // 👈 Dispara o callback
                     showingSheet = false
                 }) {
                     Text("Salvar Treino")
@@ -126,6 +140,7 @@ struct SheetView: View {
                         .background(Color.gray)
                         .cornerRadius(8)
                 }
+
                 .padding(.top)
             }
         }.onAppear(){
